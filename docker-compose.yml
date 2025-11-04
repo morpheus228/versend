@@ -1,0 +1,46 @@
+version: "3.9"
+
+services:
+  front:
+    build: ./front
+    container_name: front_container
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./front:/front
+      - /front/node_modules
+    depends_on:
+      - api
+    environment:
+      - NODE_ENV=development
+
+  api:
+    build: ./api
+    container_name: api_container
+    env_file: ./api/.env
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mysql
+    volumes:
+      - ./api/src:/api/src
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PYTHONDONTWRITEBYTECODE=1
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql_container
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: qwerty12345       
+      MYSQL_DATABASE: database        
+      MYSQL_USER: user123                  
+      MYSQL_PASSWORD: qwerty123     
+    ports:
+      - "3300:3306"                      # проброс порта на хост
+    volumes:
+      - db_data:/var/lib/mysql           # сохраняем данные между перезапусками
+
+volumes:
+  db_data:      

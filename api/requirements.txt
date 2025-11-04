@@ -1,0 +1,12 @@
+uvicorn
+fastapi
+dotenv
+sqlalchemy
+pymysql
+cryptography
+pyrogram
+langchain 
+langchain-openai
+argon2-cffi
+python-jose[cryptography]
+python-multipart
