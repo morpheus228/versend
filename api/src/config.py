@@ -14,15 +14,6 @@ class MYSQLConfig:
 
 
 @dataclass
-class RedisConfig:
-    host: str
-    password: str
-    user: str
-    database: int
-    port: int
-
-
-@dataclass
 class AIConfig:
     openai_token: str
 
@@ -30,7 +21,6 @@ class AIConfig:
 @dataclass
 class Config:
     mysql: MYSQLConfig
-    redis: RedisConfig
     ai: AIConfig
 
     @classmethod
@@ -43,14 +33,6 @@ class Config:
             user=os.getenv('MYSQL_USER'),
             database=os.getenv('MYSQL_DATABASE'),
             port=os.getenv('MYSQL_PORT')
-        )
-        
-        cls.redis = RedisConfig(
-            host=os.getenv('REDIS_HOST'),
-            password=os.getenv('REDIS_PASSWORD'),
-            user=os.getenv('REDIS_USER'),
-            database=int(os.getenv('REDIS_DATABASE')),
-            port=int(os.getenv('REDIS_PORT'))
         )
 
         cls.ai = AIConfig(

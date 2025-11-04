@@ -5,7 +5,7 @@ services:
     build: ./front
     container_name: front_container
     ports:
-      - "3000:3000"
+      - "5173:5173"
     volumes:
       - ./front:/front
       - /front/node_modules
@@ -17,7 +17,7 @@ services:
   api:
     build: ./api
     container_name: api_container
-    env_file: ./api/.env
+    env_file: .env
     ports:
       - "8000:8000"
     depends_on:
@@ -32,11 +32,7 @@ services:
     image: mysql:8.0
     container_name: mysql_container
     restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: qwerty12345       
-      MYSQL_DATABASE: database        
-      MYSQL_USER: user123                  
-      MYSQL_PASSWORD: qwerty123     
+    env_file: .env
     ports:
       - "3300:3306"                      # проброс порта на хост
     volumes:

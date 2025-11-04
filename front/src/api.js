@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Клиент для обычных API с префиксом /api
 const apiClient = axios.create({
-  baseURL: 'http://localhost:8000/api',
+  baseURL: 'http://213.171.14.159:8000/api',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -10,7 +10,7 @@ const apiClient = axios.create({
 
 // Клиент для авторизации без /api
 const authClient = axios.create({
-  baseURL: 'http://localhost:8000',
+  baseURL: 'http://213.171.14.159:8000',
   headers: {
     'Content-Type': 'application/json',
   },
