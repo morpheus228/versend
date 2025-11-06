@@ -1,5 +1,6 @@
+from schemas.campaigns import CreateCampaignResponse
 from services import Service
-from exceptions import *
+from exceptions.campaigns import DuplicateCampaignError
 from schemas import CreateCampaign, Campaign
 
 from fastapi import Response, HTTPException
@@ -11,9 +12,12 @@ class CampaignsHandler:
     def __init__(self, service: Service):
         self.service: Service = service
 
-    async def create(self, campaign: CreateCampaign):
-        campaign_id = await self.service.campaigns.create(campaign)
-        return JSONResponse({"campaign_id": campaign_id})
+    async def create(self, campaign: CreateCampaign) -> CreateCampaignResponse:
+        try:
+            return await self.service.campaigns.create(campaign)
+        except DuplicateCampaignError:
+            raise HTTPException(status_code=409, detail="Кампания с таким названием уже создана.")
+
 
     async def get(self) -> Response:
         campaigns = await self.service.campaigns.get()

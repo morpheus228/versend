@@ -20,12 +20,24 @@ export default function CreateCampaignModal({ open, onCancel, onCreated }) {
     };
 
     try {
-      await api.createCampaign(payload);
-      message.success('Кампания успешно создана');
+      const res = await api.createCampaign(payload);
+
+      // ✅ передаем данные, включая dublicate_usernames
+      onCreated?.(res.data);
+
       form.resetFields();
-      onCreated?.();
+
     } catch (err) {
-      message.error('Ошибка при создании кампании');
+      const detail =
+        err.response?.data?.detail ||
+        err.response?.data?.error ||
+        err.response?.data?.message;
+
+      if (detail) {
+        message.error(detail);
+      } else {
+        message.error("Ошибка при создании кампании");
+      }
     }
   };
 
@@ -73,7 +85,7 @@ export default function CreateCampaignModal({ open, onCancel, onCreated }) {
           name="usernames"
           rules={[{ required: true, message: 'Введите хотя бы одного пользователя' }]}
         >
-          <Input placeholder="@user1, @user2, @user3" />
+          <Input placeholder="user1, user2, user3" />
         </Form.Item>
       </Form>
     </Modal>

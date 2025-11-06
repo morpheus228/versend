@@ -23,4 +23,13 @@ class MessagesORM:
             if filters:
                 query = query.filter_by(**filters)
             return query.all()
+
+    def get_first(self, **filters) -> list[MessageORM]:
+        with Session(self.orm) as session:
+            query = session.query(MessageORM)
+            if filters:
+                query = query.filter_by(**filters)
+            return query.first()
+        
+
     

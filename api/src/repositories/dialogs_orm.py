@@ -3,6 +3,7 @@ from sqlalchemy import Engine, func
 from sqlalchemy.exc import IntegrityError
 
 from schemas import CreateDialog
+from exceptions.dialogs import *
 from .orm import Dialog as DialogORM
 
 
@@ -12,10 +13,15 @@ class DialogsORM:
         
     def create(self, dialog: CreateDialog) -> int:
         with Session(self.orm) as session:
-            dialog = DialogORM(**dialog.model_dump())
-            session.add(dialog)
-            session.commit()
-            return dialog.id
+            try:
+                dialog = DialogORM(**dialog.model_dump())
+                session.add(dialog)
+                session.commit()
+                return dialog.id
+
+            except IntegrityError:
+                session.rollback()
+                raise DuplicateDialogError
         
     def get(self, **filters) -> list[DialogORM]:
         with Session(self.orm) as session:
@@ -28,6 +34,13 @@ class DialogsORM:
         with Session(self.orm) as session:
             return session.query(DialogORM).filter(DialogORM.id == dialog_id).first()
         
+    def get_first(self, **filters) -> DialogORM:
+        with Session(self.orm) as session:
+            query = session.query(DialogORM)
+            if filters:
+                query = query.filter_by(**filters)
+            return query.first()
+                
     def get_counts(self):
         with Session(self.orm) as session:
             return session.query(
@@ -35,5 +48,17 @@ class DialogsORM:
                 DialogORM.status,
                 func.count(DialogORM.id)
             ).group_by(DialogORM.campaign_id, DialogORM.status).all()
+    
+    def update(self, filters: dict, values: dict):
+        with Session(self.orm) as session:
+            query = session.query(DialogORM)
+
+            if filters:
+                query = query.filter_by(**filters)
+
+            query.update(values)
+            session.commit()
+            
+            return query.all()
         
     

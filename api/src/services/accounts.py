@@ -1,5 +1,6 @@
 from repositories import Repository
 from repositories.orm import Account as AccountORM
+from schemas.account import CreateAccountResponse
 from .telegram import TelegramService
 
 from schemas import CreateAccount, Account
@@ -10,10 +11,10 @@ class AccountsService:
         self.repository: Repository = repository
         self.telegram: TelegramService = telegram
 
-    async def create(self, account: CreateAccount) -> int:
+    async def create(self, account: CreateAccount) -> CreateAccountResponse:
         await self.telegram.add_client(account)
         account_id = self.repository.accounts_orm.create(account)
-        return account_id
+        return CreateAccountResponse(account_id=account_id)
     
     async def get(self) -> list[Account]:
         accounts: list[AccountORM] = self.repository.accounts_orm.get()

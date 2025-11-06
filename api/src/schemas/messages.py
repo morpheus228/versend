@@ -5,7 +5,7 @@ from datetime import datetime
 
 class CreateMessage(BaseModel):
     dialog_id: int
-    text: int
+    text: str
     from_user: bool
 
 

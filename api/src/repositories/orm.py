@@ -39,7 +39,7 @@ class Dialog(Base):
     __tablename__ = 'Dialogs'
 
     id = Column(BigInteger, primary_key=True, autoincrement=True)
-    username = Column(String(100), nullable=False)
+    username = Column(String(100), nullable=False, unique=True)
     account_id = Column(BigInteger, ForeignKey("Accounts.id", ondelete="CASCADE"), nullable=True)
     campaign_id = Column(BigInteger, ForeignKey("Campaigns.id", ondelete="CASCADE"), nullable=False)
     status = Column(String(10), nullable=False) # open / closed / wait

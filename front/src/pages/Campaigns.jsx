@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Button, message, Space } from 'antd';
+import { Table, Button, message, Space, Modal } from 'antd';
 import { PlusOutlined, ReloadOutlined } from '@ant-design/icons';
 import { api } from '../api';
 import { useNavigate } from 'react-router-dom';
@@ -9,6 +9,13 @@ export default function Campaigns() {
   const [campaigns, setCampaigns] = useState([]);
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+
+  // ✅ модалка дублей
+  const [duplicateModal, setDuplicateModal] = useState({
+    open: false,
+    list: [],
+  });
+
   const navigate = useNavigate();
 
   const fetchCampaigns = async () => {
@@ -100,14 +107,39 @@ export default function Campaigns() {
         pagination={false}
       />
 
-      <CreateCampaignModal
-        open={modalVisible}
-        onCancel={() => setModalVisible(false)}
-        onCreated={() => {
-          setModalVisible(false);
-          fetchCampaigns();
-        }}
-      />
+     <CreateCampaignModal
+  open={modalVisible}
+  onCancel={() => setModalVisible(false)}
+  onCreated={(data) => {
+    setModalVisible(false);
+    fetchCampaigns();
+
+    // ✅ Уведомление об успешном создании
+    message.success("Кампания успешно создана!");
+
+    // ✅ Если есть дубли — открываем отдельное окно
+    if (data?.duplicate_usernames?.length) {
+      setDuplicateModal({
+        open: true,
+        list: data.duplicate_usernames
+      });
+    }
+  }}
+
+    />  
+
+      {/* ✅ модальное окно для дублей */}
+      <Modal
+        open={duplicateModal.open}
+        title="Найдены дубликаты"
+        onCancel={() => setDuplicateModal({ open: false, list: [] })}
+        onOk={() => setDuplicateModal({ open: false, list: [] })}
+      >
+        <p>Следующие usernames уже существуют:</p>
+        <p style={{ marginTop: 10, fontWeight: "bold" }}>
+          {duplicateModal.list.join(', ')}
+        </p>
+      </Modal>
     </div>
   );
 }

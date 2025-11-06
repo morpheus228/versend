@@ -10,6 +10,15 @@ class CreateAccount(BaseModel):
     api_hash: str
     session_string: str
 
+    model_config = {
+        "from_attributes": True
+    }
+
+
+class CreateAccountResponse(BaseModel):
+    account_id: int
+
+
 class Account(BaseModel):
     id: int
     username: str|None

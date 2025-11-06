@@ -28,15 +28,15 @@ async def test_orm_connection():
     try:
         with repository.orm.begin() as conn:
             res = conn.execute(text("SELECT NOW()"))
-            print("✅ Подключение к БД успешно! Текущее время: ", res.scalar())
+            logging.info(f"DATABASE CONNECTION -- success ✅")
 
     except Exception as e:
-        print("❌ Ошибка подключение к БД: ", e)
+        logging.error(f"DATABASE CONNECTION -- error ❌ : {e}")
 
 
 async def start_api():
     """Запуск uvicorn в asyncio.Task"""
-    config = uvicorn.Config(api, host="0.0.0.0", port=8000, loop="asyncio", reload=False)
+    config = uvicorn.Config(api, host="0.0.0.0", port=int(Config.api.port), loop="asyncio", reload=False)
     server = uvicorn.Server(config)
     await server.serve()    
 
@@ -54,12 +54,12 @@ async def start_mailer():
 async def main():
     await test_orm_connection()
 
-    # await service.telegram.load_clients()
+    await service.telegram.load_clients()
 
     tasks = [
-        # asyncio.create_task(start_listener()),
+        asyncio.create_task(start_listener()),
         asyncio.create_task(start_api()),
-        # asyncio.create_task(start_mailer()),
+        asyncio.create_task(start_mailer()),
     ]          
 
     await asyncio.gather(*tasks)

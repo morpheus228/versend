@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import Engine
 from sqlalchemy.exc import IntegrityError, NoResultFound
 
-from exceptions.accounts import DuplicateAccountError, AccountNotFoundError
+from exceptions.accounts import *
 from schemas import CreateAccount 
 
 from .orm import Account as AccountORM
@@ -21,9 +21,9 @@ class AccountsORM:
                 session.commit()
                 return account.id
 
-            except IntegrityError as error:
+            except IntegrityError:
                 session.rollback()
-                raise DuplicateAccountError(error)
+                raise DuplicateAccountError
     
     def get(self, **filters) -> list[AccountORM]:
         with Session(self.orm) as session:
@@ -38,7 +38,25 @@ class AccountsORM:
                 account = session.query(AccountORM).filter(AccountORM.id == account_id).one()
                 return account
             except NoResultFound as error:
-                raise AccountNotFoundError(error)
+                raise AccountNotFoundError
+            
+    def get_free(self) -> AccountORM:
+        with Session(self.orm) as session:
+            return session.query(AccountORM).filter(AccountORM.messages_rest > 0).first()
+        
+    def update(self, filters: dict, values: dict):
+        with Session(self.orm) as session:
+            query = session.query(AccountORM)
+
+            if filters:
+                query = query.filter_by(**filters)
+
+            query.update(values)
+            session.commit()
+            
+            return query.all()
+
+
 
 
 

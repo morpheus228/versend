@@ -19,9 +19,23 @@ class AIConfig:
 
 
 @dataclass
+class APIConfig:
+    host: str
+    port: str
+
+
+@dataclass
+class FrontConfig:
+    host: str
+    port: str
+
+
+@dataclass
 class Config:
     mysql: MYSQLConfig
     ai: AIConfig
+    api: APIConfig
+    front: FrontConfig
 
     @classmethod
     def set(cls, path: str = '.env'):
@@ -37,4 +51,14 @@ class Config:
 
         cls.ai = AIConfig(
             openai_token=os.getenv('OPENAI_API_KEY')
+        )
+
+        cls.api = APIConfig(
+            host = os.getenv('API_HOST'),
+            port = os.getenv('API_PORT')
+        )
+
+        cls.front = FrontConfig(
+            host = os.getenv('FRONT_HOST'),
+            port = os.getenv('FRONT_PORT')
         )

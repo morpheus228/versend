@@ -9,6 +9,12 @@ class CreateCampaign(BaseModel):
     text: str
     promt: str 
 
+
+class CreateCampaignResponse(BaseModel):
+    campaign_id: int
+    duplicate_usernames: list[str]
+
+
 class CampaignList(BaseModel):
     id: int
     name: str

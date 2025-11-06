@@ -1,8 +1,12 @@
 import axios from 'axios';
 
+const API_HOST = import.meta.env.VITE_API_HOST;
+const API_PORT = import.meta.env.VITE_API_PORT;
+
+
 // Клиент для обычных API с префиксом /api
 const apiClient = axios.create({
-  baseURL: 'http://213.171.14.159:8000/api',
+  baseURL: `http://${API_HOST}:${API_PORT}/api`,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -10,7 +14,7 @@ const apiClient = axios.create({
 
 // Клиент для авторизации без /api
 const authClient = axios.create({
-  baseURL: 'http://213.171.14.159:8000',
+  baseURL: `http://${API_HOST}:${API_PORT}`,
   headers: {
     'Content-Type': 'application/json',
   },

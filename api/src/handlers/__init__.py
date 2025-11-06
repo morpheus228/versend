@@ -7,6 +7,7 @@ from .dialogs import DialogsHandler
 from .auth import AuthHandler
 
 from services import Service
+from config import Config
 
 
 class Handler:
@@ -44,9 +45,8 @@ class Handler:
         app.include_router(self.auth_router)
 
         origins = [
-            "http://localhost:5173",   
-            "http://127.0.0.1:5173",
-            "http://213.171.14.159:5173",
+            f"http://localhost:{Config.front.port}",
+            f"http://{Config.front.host}:{Config.front.port}",
         ]
 
         app.add_middleware(

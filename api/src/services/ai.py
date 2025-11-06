@@ -19,6 +19,7 @@ class AIService:
         # )
 
     async def get_answer(self, messages_history: list[dict]) -> str:
+        
         # history = [SystemMessage(content=SYSTEM_PROMT)] 
 
         # for message in messages_history[::-1]:
