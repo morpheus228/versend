@@ -10,3 +10,4 @@ langchain-openai
 argon2-cffi
 python-jose[cryptography]
 python-multipart
+alembic
